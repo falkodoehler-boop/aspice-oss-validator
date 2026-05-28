@@ -1,11 +1,4 @@
-Letzte Datei.
-
-Datei 5 von 5
-"Add file" → "Create new file"
-Name:
-examples/example_evidence_output.md
-Inhalt:
-markdown# Example: pytest Output → ASPICE SWQ.1 Evidence Record
+# Example: pytest Output → ASPICE SWQ.1 Evidence Record
 
 This example demonstrates how aspice-oss-validator transforms
 raw pytest output into an ASPICE-compliant evidence artifact.
