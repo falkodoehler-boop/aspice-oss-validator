@@ -16,9 +16,15 @@ standard clauses, and points to the validator artifact that produces evidence.
 | Process | Question answered | Validator artifact | Status |
 |---|---|---|---|
 | **HWE.1** Hardware Requirements Analysis | What must the hardware do? | `prompts/aspice_hwe1_analyzer.md` + `parser/hwe1_to_aspice.py` | ✅ |
-| **HWE.2** Hardware Design | How is it architected? | `prompts/aspice_hwe2_analyzer.md` | ✅ |
-| **HWE.3** Verification against HW Design | Did we build what we designed? | `prompts/aspice_hwe3_analyzer.md` | ✅ |
-| **HWE.4** Verification against HW Requirements | Did we build what was specified? | `prompts/aspice_hwe4_analyzer.md` | ✅ |
+| **HWE.2** Hardware Design | How is it architected? | `prompts/aspice_hwe2_analyzer.md` + `parser/hwe_trace_to_aspice.py` | ✅ |
+| **HWE.3** Verification against HW Design | Did we build what we designed? | `prompts/aspice_hwe3_analyzer.md` + `parser/hwe_trace_to_aspice.py` | ✅ |
+| **HWE.4** Verification against HW Requirements | Did we build what was specified? | `prompts/aspice_hwe4_analyzer.md` + `parser/hwe_trace_to_aspice.py` | ✅ |
+
+> `hwe_trace_to_aspice.py` performs the **deterministic** subset of HWE.2–4
+> assurance — allocation orphans, ASIL consistency, element/requirement
+> coverage, and fault-injection presence for ASIL C/D — over CSV exports of
+> requirements, elements and test cases. The prompts handle the judgement
+> that cannot be reduced to ID joins (is a test case *technically adequate*).
 
 ---
 

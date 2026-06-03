@@ -50,7 +50,8 @@ aspice-oss-validator/
 │   └── aspice_hwe4_analyzer.md      # HWE.4 Verification vs Requirements prompt (v4.0)
 ├── parser/
 │   ├── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
-│   └── hwe1_to_aspice.py            # requirements CSV → ASPICE HWE.1 skeleton
+│   ├── hwe1_to_aspice.py            # requirements CSV → ASPICE HWE.1 skeleton
+│   └── hwe_trace_to_aspice.py       # req/elem/test CSVs → HWE.2-4 traceability report
 ├── docs/
 │   ├── aspice_oss_mapping.md        # ASPICE SWE BP ↔ OSS tool mapping table
 │   └── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
@@ -88,6 +89,19 @@ python parser/hwe1_to_aspice.py examples/phase_current_sensor/input_requirements
 
 # Output: aspice_hwe1_spec.md — feed it to prompts/aspice_hwe1_analyzer.md
 # for the full INCOSE 8-criteria + ISO 26262-5 graded specification.
+```
+
+### Hardware (HWE.2–HWE.4 traceability & coverage)
+
+```bash
+# Deterministic relationship checks across design, design verification and
+# requirement verification (orphans, ASIL consistency, coverage, fault injection):
+python parser/hwe_trace_to_aspice.py \
+  --requirements examples/phase_current_sensor/trace_requirements.csv \
+  --elements     examples/phase_current_sensor/trace_elements.csv \
+  --testcases    examples/phase_current_sensor/trace_testcases.csv
+
+# Output: hwe_trace_report.md — bidirectional matrix + per-process verdicts.
 ```
 
 ---
@@ -137,6 +151,7 @@ python parser/hwe1_to_aspice.py examples/phase_current_sensor/input_requirements
 - [x] HWE.1 CSV → Hardware Requirements Spec parser (`parser/hwe1_to_aspice.py`)
 - [x] HWE.1–4 ↔ OSS tool mapping table (`docs/aspice_hwe_mapping.md`)
 - [x] ISO 26262 Part 5 (hardware) clause mapping (in `docs/aspice_hwe_mapping.md`)
+- [x] HWE.2–4 traceability & coverage parser (`parser/hwe_trace_to_aspice.py`)
 - [ ] HWE.1 ReqIF round-trip export (currently export skeleton only)
 - [ ] FMEDA metric (PMHF/SPFM) parser hook for HWE.3/HWE.4
 
