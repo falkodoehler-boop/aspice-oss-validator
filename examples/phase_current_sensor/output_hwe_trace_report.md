@@ -1,6 +1,6 @@
 # ASPICE v4.0 HWE.2-HWE.4 — Traceability & Coverage Report
 
-**Generated:** 2026-06-03T14:25:17
+**Generated:** 2026-06-03T14:46:40
 **Tool:** hwe_trace_to_aspice.py (mechanical relationship checks)
 
 ## Summary
@@ -10,7 +10,8 @@
 | Design elements (HWE.2) | 5 |
 | Design test cases TC-D (HWE.3) | 4 |
 | Requirement test cases TC-R (HWE.4) | 7 |
-| Element coverage (HWE.3) | 80.0% |
+| Design ASIL (max) | D |
+| Element coverage (HWE.3) | 80.0% (target 100%) |
 | Requirement coverage (HWE.4) | 87.5% (target 100%) |
 
 | Process | Verdict |
@@ -31,9 +32,11 @@
 - ASIL D element HW-ELEM-SEN-002 has no fault-injection test case
 - ASIL D element HW-ELEM-SEN-004 has no fault-injection test case
 - ASIL D element HW-ELEM-SEN-005 has no fault-injection test case
+- Element coverage 80.0% < ASIL D target 100%
 
 ## HWE.4 — Requirement verification findings
 - Requirement HW-REQ-SEN-008 has no requirement test case (TC-R)
+- Requirement coverage 87.5% < ASIL D target 100%
 
 ## Bidirectional traceability matrix
 

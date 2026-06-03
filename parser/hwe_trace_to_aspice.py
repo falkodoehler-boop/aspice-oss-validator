@@ -47,6 +47,8 @@ ASIL_ORDER = {"QM": 0, "A": 1, "B": 2, "C": 3, "D": 4}
 # Built-in defaults. Overridable (auditably) via config/review_rules.json.
 PARTIAL_MIN_REQ_COV = 50
 FAULT_INJECTION_FROM = "C"
+ELEMENT_COV_MIN = {"QM": 90, "A": 100, "B": 100, "C": 100, "D": 100}
+REQ_COV_MIN = {"QM": 90, "A": 95, "B": 95, "C": 100, "D": 100}
 
 DEFAULT_CONFIG = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -59,7 +61,7 @@ def load_rules(path: str) -> None:
 
     Silent no-op if absent; malformed file is reported, not swallowed.
     """
-    global PARTIAL_MIN_REQ_COV, FAULT_INJECTION_FROM
+    global PARTIAL_MIN_REQ_COV, FAULT_INJECTION_FROM, ELEMENT_COV_MIN, REQ_COV_MIN
     if not path or not os.path.isfile(path):
         return
     try:
@@ -73,6 +75,8 @@ def load_rules(path: str) -> None:
                                  PARTIAL_MIN_REQ_COV)
     FAULT_INJECTION_FROM = ct.get("fault_injection_required_from_asil",
                                   FAULT_INJECTION_FROM)
+    ELEMENT_COV_MIN = ct.get("element_coverage_min", ELEMENT_COV_MIN)
+    REQ_COV_MIN = ct.get("requirement_coverage_min", REQ_COV_MIN)
 
 
 def load_csv(path: str, required: set) -> list:
@@ -163,6 +167,23 @@ def analyze(reqs, elems, tcs) -> dict:
     elem_cov = (len(covered_elems & elem_ids) / len(elem_ids) * 100) if elem_ids else 100.0
     req_cov = (len(covered_reqs & req_ids) / len(req_ids) * 100) if req_ids else 100.0
 
+    # ---- coverage vs ASIL-scaled thresholds (config-driven) ----
+    asil_ranks = [asil_rank(e.get("ASIL", "")) for e in elems] + \
+                 [asil_rank(a) for a in req_asil.values()]
+    asil_ranks = [r for r in asil_ranks if r >= 0]
+    design_rank = max(asil_ranks) if asil_ranks else ASIL_ORDER["QM"]
+    design_asil = next(k for k, v in ASIL_ORDER.items() if v == design_rank)
+    elem_min = ELEMENT_COV_MIN.get(design_asil, 100)
+    req_min = REQ_COV_MIN.get(design_asil, 100)
+    if elem_cov < elem_min:
+        findings["hwe3"].append(
+            f"Element coverage {elem_cov:.1f}% < ASIL {design_asil} target {elem_min}%"
+        )
+    if req_cov < req_min:
+        findings["hwe4"].append(
+            f"Requirement coverage {req_cov:.1f}% < ASIL {design_asil} target {req_min}%"
+        )
+
     def verdict(fs):
         return "PASS" if not fs else "FAIL"
 
@@ -173,8 +194,11 @@ def analyze(reqs, elems, tcs) -> dict:
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "counts": {"req": len(reqs), "elem": len(elems),
                    "tc_d": len(tc_d), "tc_r": len(tc_r)},
+        "design_asil": design_asil,
         "elem_coverage": round(elem_cov, 1),
+        "elem_cov_target": elem_min,
         "req_coverage": round(req_cov, 1),
+        "req_cov_target": req_min,
         "findings": findings,
         "verdicts": {k: verdict(v) for k, v in findings.items()},
         "overall": overall,
@@ -212,8 +236,9 @@ def generate_markdown(data: dict) -> str:
         f"| Design elements (HWE.2) | {c['elem']} |",
         f"| Design test cases TC-D (HWE.3) | {c['tc_d']} |",
         f"| Requirement test cases TC-R (HWE.4) | {c['tc_r']} |",
-        f"| Element coverage (HWE.3) | {data['elem_coverage']}% |",
-        f"| Requirement coverage (HWE.4) | {data['req_coverage']}% (target 100%) |",
+        f"| Design ASIL (max) | {data['design_asil']} |",
+        f"| Element coverage (HWE.3) | {data['elem_coverage']}% (target {data['elem_cov_target']}%) |",
+        f"| Requirement coverage (HWE.4) | {data['req_coverage']}% (target {data['req_cov_target']}%) |",
         "",
         "| Process | Verdict |",
         "|---------|---------|",

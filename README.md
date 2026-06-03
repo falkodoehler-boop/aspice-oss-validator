@@ -119,6 +119,13 @@ python parser/fmeda_to_aspice.py examples/phase_current_sensor/fmeda.csv --asil 
 # Output: fmeda_metrics_report.md — per-metric PASS/FAIL vs the ASIL target.
 ```
 
+### Tests
+
+```bash
+pip install pytest
+python -m pytest tests/ -q   # unit tests for all three HWE parsers
+```
+
 ---
 
 ## ASPICE Coverage
