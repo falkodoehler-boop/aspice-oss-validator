@@ -142,18 +142,36 @@ python parser/hwe_trace_to_aspice.py \
 
 ## Roadmap
 
-- [ ] coverage.py → ASPICE SWE.4 BP2 parser
+### ✅ Done
+
+- [x] pytest → ASPICE SWQ.1 evidence parser (`parser/pytest_to_aspice.py`)
+- [x] SWQ.1 / SWA.2 prompt templates
+- [x] **HWE.1–4 prompt set** (`prompts/aspice_hwe*_analyzer.md`) — ASPICE v4.0
+- [x] **HWE.1 CSV → requirements spec parser** (`parser/hwe1_to_aspice.py`)
+- [x] **HWE.2–4 traceability & coverage parser** (`parser/hwe_trace_to_aspice.py`)
+- [x] **HWE ↔ OSS tool + ISO 26262-5 mapping** (`docs/aspice_hwe_mapping.md`)
+- [x] **End-to-end HWE.1→4 worked example** (`examples/phase_current_sensor/`)
+
+### 🔄 Software track (ASPICE v3.1)
+
+- [ ] coverage.py → SWE.4 BP2 parser
 - [ ] pylint → SUP.1 BP2 parser
 - [ ] strictdoc → SWE.1 traceability prompt
-- [ ] GitHub Actions workflow: automated full ASPICE evidence pipeline
-- [ ] ISO 26262 Part 6 mapping table
-- [ ] Web interface for evidence generation
-- [x] HWE.1 CSV → Hardware Requirements Spec parser (`parser/hwe1_to_aspice.py`)
-- [x] HWE.1–4 ↔ OSS tool mapping table (`docs/aspice_hwe_mapping.md`)
-- [x] ISO 26262 Part 5 (hardware) clause mapping (in `docs/aspice_hwe_mapping.md`)
-- [x] HWE.2–4 traceability & coverage parser (`parser/hwe_trace_to_aspice.py`)
+- [ ] SWE.5 integration-test prompt + parser
+
+### 🔄 Hardware track (ASPICE v4.0)
+
 - [ ] HWE.1 ReqIF round-trip export (currently export skeleton only)
-- [ ] FMEDA metric (PMHF/SPFM) parser hook for HWE.3/HWE.4
+- [ ] FMEDA metric (PMHF / SPFM / LFM) parser hook for HWE.3/HWE.4
+- [ ] HWE.2 interface-completeness checker (6-dimension matrix)
+- [ ] Extend traceability parser to ingest ReqIF/DOORS exports directly
+
+### 🔭 Cross-cutting
+
+- [ ] GitHub Actions workflow: automated full ASPICE evidence pipeline (SWE + HWE)
+- [ ] ISO 26262 Part 6 (software) clause mapping
+- [ ] Web interface for evidence generation
+- [ ] Migrate SWE prompts from ASPICE v3.1 → v4.0 (HWE already on v4.0)
 
 ---
 
