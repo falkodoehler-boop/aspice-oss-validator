@@ -35,4 +35,3 @@ ASPICE SWA.2 conformance verdict: PASS / PARTIAL / FAIL
 ## Expected Output Format
 Structured markdown report with tables, suitable for inclusion
 in a software development file or audit package.
-Commit Message: Add SWA.2 analyzer prompt

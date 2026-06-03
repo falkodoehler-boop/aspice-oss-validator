@@ -18,5 +18,13 @@
     "fault_injection_required_from_asil": "C",
     "partial_verdict_min_requirement_coverage": 50,
     "lesson_ref": []
+  },
+  "asil_architectural_metrics": {
+    "comment": "ISO 26262-5:2018 hardware architectural metric targets. SPFM/LFM per Clause 8 (Tables 4-5); PMHF per Clause 9 (Table 6), expressed in FIT (1 FIT = 1e-9/h). ASIL A has no architectural-metric target; null = not required.",
+    "spfm_min_percent": {"QM": null, "A": null, "B": 90, "C": 97, "D": 99},
+    "lfm_min_percent":  {"QM": null, "A": null, "B": 60, "C": 80, "D": 90},
+    "pmhf_max_fit":     {"QM": null, "A": null, "B": 100, "C": 100, "D": 10},
+    "diagnostic_coverage_min_percent": {"QM": null, "A": null, "B": 90, "C": 90, "D": 99},
+    "lesson_ref": ["LL-2026-0007"]
   }
 }

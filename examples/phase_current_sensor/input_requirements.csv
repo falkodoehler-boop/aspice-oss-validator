@@ -1,9 +1,9 @@
 ID,Statement,Rationale,ASIL,Source
-RAW-001,Sensor must measure phase current up to plus/minus 400 A,Close the torque control loop on peak phase current,C,SG-INV-002
-RAW-002,Sensor must be accurate enough to detect uncontrolled torque,Detect fault before torque exceeds 20 Nm,C,SG-INV-002
-RAW-003,Sensor must be fast enough for the inverter control loop,Control loop bandwidth needs headroom,C,SG-INV-002
-RAW-004,Sensor must isolate HV from LV side,DC-link is 400-800 V,C,SG-INV-002
-RAW-005,Sensor must detect its own failures and report them,ASIL C needs a safety mechanism,C,"SG-INV-002, ISO 26262-5"
-RAW-006,Sensor must reach the required diagnostic coverage,Meet SPFM target for ASIL C,C,ISO 26262-5
-RAW-007,Sensor runs from the control-unit 5 V rail,Standard analog reference rail,C,SYS-REQ-PWR-003
-RAW-008,Sensor must work across the powertrain temperature range,Powertrain-near mounting position,C,SYS-REQ-ENV-001
+RAW-001,Sensor must measure phase current up to plus/minus 400 A,Close the torque control loop on peak phase current,D,SG-INV-002
+RAW-002,Sensor must be accurate enough to detect uncontrolled torque,Detect fault before torque exceeds 20 Nm,D,SG-INV-002
+RAW-003,Sensor must be fast enough for the inverter control loop,Control loop bandwidth needs headroom,D,SG-INV-002
+RAW-004,Sensor must isolate HV from LV side,DC-link is 400-800 V,D,SG-INV-002
+RAW-005,Sensor must detect its own failures and report them,ASIL D needs a safety mechanism,D,"SG-INV-002, ISO 26262-5"
+RAW-006,Sensor must reach the required diagnostic coverage,Meet SPFM target for ASIL D,D,ISO 26262-5
+RAW-007,Sensor runs from the control-unit 5 V rail,Standard analog reference rail,D,SYS-REQ-PWR-003
+RAW-008,Sensor must work across the powertrain temperature range,Powertrain-near mounting position,D,SYS-REQ-ENV-001

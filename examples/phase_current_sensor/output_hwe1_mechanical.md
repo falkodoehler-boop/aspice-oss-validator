@@ -1,6 +1,6 @@
 # ASPICE v4.0 HWE.1 — Hardware Requirements Specification (draft)
 
-**Generated:** 2026-06-03T12:00:28
+**Generated:** 2026-06-03T14:25:17
 **Tool:** hwe1_to_aspice.py (mechanical pass — INCOSE heuristics only)
 
 > This is a structural skeleton. The mechanical INCOSE subset is checked
@@ -23,7 +23,7 @@
 ```
 ID:      HW-REQ-SEN-001
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SG-INV-002
 
 Statement:
@@ -45,7 +45,7 @@ Traceability:          Upward SG-INV-002; Downward TBD (HWE.2); Test TBD (HWE.4)
 ```
 ID:      HW-REQ-SEN-002
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SG-INV-002
 
 Statement:
@@ -69,7 +69,7 @@ Traceability:          Upward SG-INV-002; Downward TBD (HWE.2); Test TBD (HWE.4)
 ```
 ID:      HW-REQ-SEN-003
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SG-INV-002
 
 Statement:
@@ -93,7 +93,7 @@ Traceability:          Upward SG-INV-002; Downward TBD (HWE.2); Test TBD (HWE.4)
 ```
 ID:      HW-REQ-SEN-004
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SG-INV-002
 
 Statement:
@@ -116,14 +116,14 @@ Traceability:          Upward SG-INV-002; Downward TBD (HWE.2); Test TBD (HWE.4)
 ```
 ID:      HW-REQ-SEN-005
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SG-INV-002, ISO 26262-5
 
 Statement:
   Sensor must detect its own failures and report them
 
 Rationale:
-  ASIL C needs a safety mechanism
+  ASIL D needs a safety mechanism
 
 Acceptance Criteria:
   - TODO (reviewer/prompt): add measurable criteria
@@ -140,14 +140,14 @@ Traceability:          Upward SG-INV-002, ISO 26262-5; Downward TBD (HWE.2); Tes
 ```
 ID:      HW-REQ-SEN-006
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  ISO 26262-5
 
 Statement:
   Sensor must reach the required diagnostic coverage
 
 Rationale:
-  Meet SPFM target for ASIL C
+  Meet SPFM target for ASIL D
 
 Acceptance Criteria:
   - TODO (reviewer/prompt): add measurable criteria
@@ -163,7 +163,7 @@ Traceability:          Upward ISO 26262-5; Downward TBD (HWE.2); Test TBD (HWE.4
 ```
 ID:      HW-REQ-SEN-007
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SYS-REQ-PWR-003
 
 Statement:
@@ -185,7 +185,7 @@ Traceability:          Upward SYS-REQ-PWR-003; Downward TBD (HWE.2); Test TBD (H
 ```
 ID:      HW-REQ-SEN-008
 Status:  Draft
-ASIL:    C
+ASIL:    D
 Source:  SYS-REQ-ENV-001
 
 Statement:

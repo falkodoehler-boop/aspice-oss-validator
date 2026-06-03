@@ -65,6 +65,18 @@ For any ASIL A–D requirement, apply ISO 26262-5 constraints:
   - Reference the PMHF / FIT budget if applicable
   - Document any ASIL decomposition (ISO 26262-9 §5) explicitly
 
+For ASIL B–D, additionally enforce the architectural-metric targets — these
+are MANDATORY, not "if applicable" (ISO 26262-5 Clause 8 + 9):
+  - SPFM >= {B:90, C:97, D:99} %   (Clause 8, Table 4)
+  - LFM  >= {B:60, C:80, D:90} %   (Clause 8, Table 5)
+  - PMHF <  {B:100, C:100, D:10} FIT (Clause 9, Table 6)
+  - State the Diagnostic Coverage class consistent with the above
+  - Require a Dependent Failure Analysis (DFA) and a freedom-from-interference
+    argument for any decomposition or mixed-ASIL coexistence (ISO 26262-9 §6/§7)
+If a metric target or its input (e.g. PMHF budget share, FMEDA data) is not yet
+available, raise it as a release-blocking Action Item — do NOT mark the
+requirement complete and do NOT invent a value.
+
 Produce:
 
   1. Hardware Requirements Specification (all requirement records)
@@ -83,6 +95,9 @@ Produce:
   a verification method, or an ASIL tag.
 - Flag — do not invent — missing numeric inputs (e.g. torque constant k_T,
   PMHF budget) as explicit Action Items.
+- For ASIL D, do not declare the requirement set complete without the strict
+  metric targets (SPFM >= 99 %, LFM >= 90 %, PMHF < 10 FIT) being stated and a
+  DFA being required for any decomposition.
 
 ## Expected Output Format
 Structured Markdown specification, suitable for direct inclusion in a

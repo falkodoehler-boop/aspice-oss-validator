@@ -1,9 +1,10 @@
-# Example — Phase Current Sensor (HWE.1)
+# Example — Phase Current Sensor (HWE.1–4, ASIL D)
 
-End-to-end HWE.1 example: a phase current sensor for a drive inverter,
-range ±400 A, **ASIL C**, derived from a fictional safety goal
-**SG-INV-002** (*protection against uncontrolled torque > 20 Nm in the
-fault case*).
+End-to-end example: a phase current sensor for a drive inverter, range ±400 A,
+**ASIL D**, derived from a fictional safety goal **SG-INV-002** (*protection
+against uncontrolled torque > 20 Nm in the fault case*). Because the ASIL is D
+and undecomposed, the strict ISO 26262-5 architectural-metric targets apply
+(SPFM ≥ 99 %, LFM ≥ 90 %, PMHF < 10 FIT).
 
 ## Files
 
@@ -11,9 +12,11 @@ fault case*).
 |---|---|
 | [`input_requirements.csv`](input_requirements.csv) | Raw, unstructured requirement input (the kind exported from a draft sheet) |
 | [`output_hwe1_mechanical.md`](output_hwe1_mechanical.md) | **Stage 1** — `parser/hwe1_to_aspice.py` output: structural skeleton + mechanical INCOSE screen |
-| [`output_hwe1_spec.md`](output_hwe1_spec.md) | **Stage 2** — `aspice_hwe1_analyzer.md` prompt output: full graded ASPICE v4.0 spec |
+| [`output_hwe1_spec.md`](output_hwe1_spec.md) | **Stage 2** — `aspice_hwe1_analyzer.md` prompt output: full graded ASPICE v4.0 spec (ASIL D, incl. metric targets) |
 | [`trace_requirements.csv`](trace_requirements.csv) / [`trace_elements.csv`](trace_elements.csv) / [`trace_testcases.csv`](trace_testcases.csv) | **HWE.2–4** input: requirements, design elements, test cases |
 | [`output_hwe_trace_report.md`](output_hwe_trace_report.md) | **HWE.2–4** output: `hwe_trace_to_aspice.py` traceability & coverage report |
+| [`fmeda.csv`](fmeda.csv) | **ISO 26262-5** input: per-element FMEDA failure rates (FIT) |
+| [`output_fmeda_metrics_report.md`](output_fmeda_metrics_report.md) | **ISO 26262-5** output: `fmeda_to_aspice.py` SPFM/LFM/PMHF vs ASIL D target (PASS) |
 
 ## Two-stage pipeline
 
@@ -73,8 +76,33 @@ The example data carries **deliberate defects** so the report is instructive:
 | `HW-ELEM-SEN-005` (Housing) allocates no requirement | HWE.2 orphan element |
 | `HW-REQ-SEN-008` allocated to no element | HWE.2 orphan requirement |
 | `HW-ELEM-SEN-005` has no design test case | HWE.3 element coverage gap |
-| ASIL C elements without fault injection | HWE.3 fault-injection gaps |
+| ASIL D elements without fault injection | HWE.3 fault-injection gaps |
 | `HW-REQ-SEN-008` has no requirement test case | HWE.4 coverage < 100% |
+
+## ISO 26262-5 architectural metrics (the ASIL D gate)
+
+`fmeda_to_aspice.py` computes the Clause 8/9 metrics from `fmeda.csv` and gates
+them against the ASIL D targets:
+
+```
+fmeda.csv  │  python parser/fmeda_to_aspice.py fmeda.csv --asil D
+           ▼
+output_fmeda_metrics_report.md
+```
+
+For this two-channel design the result is **PASS**:
+
+| Metric | Computed | ASIL D target | Result |
+|---|---|---|---|
+| SPFM | 99.23 % | ≥ 99 % | PASS |
+| LFM | 92.44 % | ≥ 90 % | PASS |
+| PMHF (residual proxy) | 0.77 FIT | < 10 FIT | PASS |
+
+This is the difference between *ASIL-aware* and *ASIL-D-designed*: coverage and
+traceability alone (the trace report above) do not establish ASIL D — the
+quantitative metrics must be met and shown. Note the PMHF here is a residual
+single-point proxy; a release-grade PMHF adds dual-point contributions
+(ISO 26262-5 Clause 9 / Annex F) — tracked as a roadmap item.
 
 Result: requirement coverage 87.5 % (target 100 %) → per-process **FAIL**,
 overall **PARTIAL** — exactly the gaps an assessor would flag.

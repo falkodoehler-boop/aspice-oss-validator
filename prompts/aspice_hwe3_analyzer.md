@@ -59,13 +59,21 @@ Then produce:
      - Fault-injection coverage (ASIL C/D only; % of FMEDA modes injected)
      Thresholds — QM: elem>=90%, param>=80%. ASIL A/B: elem 100%, param>=95%,
      FI>=70%. ASIL C/D: elem 100%, param 100%, FI>=99%.
-  2. Deviation log (failures, waivers, retest plan).
-  3. Overall ASPICE HWE.3 conformance verdict: PASS / PARTIAL / FAIL.
+  2. For ASIL B–D, an architectural-metric verification statement
+     (ISO 26262-5 Clause 8 + 9) confirming the FMEDA-derived SPFM / LFM / PMHF
+     meet the ASIL target (D: SPFM >= 99 %, LFM >= 90 %, PMHF < 10 FIT). Cite
+     the metrics evidence (e.g. fmeda_to_aspice.py report). Mark UNVERIFIED if
+     FMEDA data is absent — never assume the targets are met.
+  3. Deviation log (failures, waivers, retest plan).
+  4. Overall ASPICE HWE.3 conformance verdict: PASS / PARTIAL / FAIL.
 
 ## Behavioral Rules
 - Every HWE.2 element must have >= 1 test case; flag coverage gaps explicitly.
 - Each numeric parameter needs nominal + min + max points.
 - ASIL C/D elements require fault-injection test cases — do not omit.
+- For ASIL B–D, the verdict cannot be PASS unless the architectural metrics
+  (SPFM/LFM/PMHF) are shown to meet the ASIL target — coverage alone is
+  insufficient.
 - Reject test cases that exist only "for completeness" without a coverage,
   boundary, ASIL, risk, or reuse justification (scope inflation).
 

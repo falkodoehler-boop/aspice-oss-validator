@@ -78,8 +78,19 @@ injection for ASIL C/D; AEC-Q100/Q200 qualification reports.
 | Test execution & evidence capture | `PyVISA`, `pandas` | Requirement-level test records |
 | Release gating | `aspice_hwe4_analyzer.md` prompt | Release decision record |
 
-**Standard hooks:** ISO 26262-5 §8.4.5 (PMHF / SPFM / LFM metrics, Table 4 for
-ASIL C/D); OEM acceptance and homologation reports as accredited evidence.
+**Standard hooks:** ISO 26262-5 Clause 8 (SPFM/LFM, Tables 4-5) and Clause 9
+(PMHF, Table 6); OEM acceptance and homologation reports as accredited evidence.
+
+**Architectural metrics (`parser/fmeda_to_aspice.py`):** computes SPFM, LFM and
+a PMHF proxy from a per-element FMEDA CSV and gates them against the ASIL target
+from `config/review_rules.json`. ASIL D targets: SPFM >= 99 %, LFM >= 90 %,
+PMHF < 10 FIT (vs 97 % / 80 % / 100 FIT at ASIL C). The PMHF figure is a
+residual single-point proxy — full PMHF (dual-point with exposure/test
+intervals, Clause 9 / Annex F) remains a roadmap item (see LL-2026-0008).
+
+**Dependent Failure Analysis:** ASIL decomposition and mixed-ASIL coexistence
+require a DFA and a freedom-from-interference argument (ISO 26262-9 §6/§7). The
+prompts demand it; it is not yet mechanically checkable (LL-2026-0009).
 
 ---
 

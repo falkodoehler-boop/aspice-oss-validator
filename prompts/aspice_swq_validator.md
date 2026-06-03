@@ -31,4 +31,3 @@ Overall ASPICE conformance verdict: PASS / PARTIAL / FAIL
 ## Expected Output Format
 Structured markdown report, suitable for inclusion in a
 technical safety file or project audit package.
-Commit mit Message: Add SWQ.1 validator prompt

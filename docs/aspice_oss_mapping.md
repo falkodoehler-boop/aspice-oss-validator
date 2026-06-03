@@ -81,5 +81,3 @@ when used together with aspice-oss-validator.
 ---
 
 *Maintained by aspice-oss-validator — contributions welcome.*
-
-Commit Message: Add ASPICE-to-OSS mapping documentation

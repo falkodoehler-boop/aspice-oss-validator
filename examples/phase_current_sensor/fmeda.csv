@@ -1,0 +1,6 @@
+element_id,lambda_total_fit,lambda_spf_fit,lambda_rf_fit,lambda_mpf_latent_fit
+HW-ELEM-SEN-001,40,0.3,0.1,3.0
+HW-ELEM-SEN-002,20,0.1,0.05,1.0
+HW-ELEM-SEN-003,25,0.1,0.05,2.0
+HW-ELEM-SEN-004,10,0.05,0.02,1.0
+HW-ELEM-SEN-005,5,0.0,0.0,0.5

@@ -35,6 +35,7 @@ A reviewer can then walk backwards from any heuristic to the evidence for it.
 | LL-2026-0002 | 2026-06-03 | Self-test (Windows console) | Cosmetic | Em-dash in `print()` rendered as `�` on the Windows console (cp1252). | Use ASCII `-` in stdout; keep Unicode only in file output. | `parser/hwe_trace_to_aspice.py` | Closed |
 | LL-2026-0003 | 2026-06-03 | Example raw requirements | Medium | Vague raw lines ("fast enough", "accurate enough") passed structural parsing but are untestable; needed an explicit screen. | Maintain the `vague_terms` / `non_normative_terms` lists in `review_rules.json`; flag as INCOSE `Unambiguous`/`Verifiable`. | `config/review_rules.json` | Closed |
 | LL-2026-0004 | 2026-06-03 | Mapping review | Info | No mature OSS tool computes FMEDA metrics (PMHF/SPFM); risk of implying coverage we cannot provide. | State the gap explicitly; add FMEDA hook to roadmap, do not fake it. | `docs/aspice_hwe_mapping.md` | Closed |
+| LL-2026-0007 | 2026-06-03 | ASIL-D review | Major | Artifacts were ASIL-aware but did not enforce the ASIL-D architectural-metric targets (SPFM >= 99 %, LFM >= 90 %, PMHF < 10 FIT); a design could pass coverage yet be non-compliant for ASIL D. | Add the per-ASIL metric table to `review_rules.json`; build `fmeda_to_aspice.py` to compute and gate SPFM/LFM/PMHF; make the metrics mandatory (not "if applicable") in the HWE.1/HWE.3 prompts. | `config/review_rules.json`, `parser/fmeda_to_aspice.py`, prompts | Closed |
 
 ## Open / candidate lessons
 
@@ -42,6 +43,8 @@ A reviewer can then walk backwards from any heuristic to the evidence for it.
 |---|---|---|---|---|---|
 | LL-2026-0005 | 2026-06-03 | Design review | Heuristic vague-term list is English-only; German requirement sets (e.g. "ausreichend", "geeignet") slip through. | Add a `de` term list to `review_rules.json` and language detection. | Open |
 | LL-2026-0006 | 2026-06-03 | Design review | Trace parser treats any `verifies_id` mismatch as a hard finding; partial/redundant allocations may need softer handling. | Evaluate against a real multi-channel (decomposed) design before changing. | Open |
+| LL-2026-0008 | 2026-06-03 | ASIL-D review | PMHF is reported as a residual single-point proxy only; full PMHF needs dual-point (latent/detected) contributions with exposure/test intervals (ISO 26262-5 Clause 9 / Annex F). | Extend `fmeda_to_aspice.py` with dual-point inputs, or integrate an external FMEDA tool; keep labelling the proxy until then. | Open |
+| LL-2026-0009 | 2026-06-03 | ASIL-D review | Dependent Failure Analysis (DFA) and freedom-from-interference (ISO 26262-9 §6/§7) are referenced in prompts but not mechanically checkable; mixed-ASIL coexistence has no parser support. | Add a DFA/coexistence checklist artifact and consider a parser for documented common-cause initiators. | Open |
 
 ## Contribution note
 

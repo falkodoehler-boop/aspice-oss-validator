@@ -52,7 +52,8 @@ aspice-oss-validator/
 ├── parser/
 │   ├── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
 │   ├── hwe1_to_aspice.py            # requirements CSV → ASPICE HWE.1 skeleton
-│   └── hwe_trace_to_aspice.py       # req/elem/test CSVs → HWE.2-4 traceability report
+│   ├── hwe_trace_to_aspice.py       # req/elem/test CSVs → HWE.2-4 traceability report
+│   └── fmeda_to_aspice.py           # FMEDA CSV → ISO 26262-5 SPFM/LFM/PMHF vs ASIL target
 ├── config/
 │   └── review_rules.json            # auditable, externalized heuristics & thresholds
 ├── docs/
@@ -106,6 +107,16 @@ python parser/hwe_trace_to_aspice.py \
   --testcases    examples/phase_current_sensor/trace_testcases.csv
 
 # Output: hwe_trace_report.md — bidirectional matrix + per-process verdicts.
+```
+
+### Hardware (ISO 26262-5 architectural metrics — the ASIL gate)
+
+```bash
+# Compute SPFM / LFM / PMHF from a per-element FMEDA CSV and check them against
+# the target ASIL (D: SPFM >= 99%, LFM >= 90%, PMHF < 10 FIT):
+python parser/fmeda_to_aspice.py examples/phase_current_sensor/fmeda.csv --asil D
+
+# Output: fmeda_metrics_report.md — per-metric PASS/FAIL vs the ASIL target.
 ```
 
 ---
@@ -176,6 +187,9 @@ review / real use → finding or anomaly → docs/lessons_learned.md (LL-id)
 - [x] **End-to-end HWE.1→4 worked example** (`examples/phase_current_sensor/`)
 - [x] **Review + lessons-learned learning loop** (`prompts/aspice_review.md`,
       `docs/lessons_learned.md`, `config/review_rules.json`)
+- [x] **ISO 26262-5 architectural-metric gate** (`parser/fmeda_to_aspice.py`):
+      SPFM/LFM/PMHF computed and checked against per-ASIL targets, **ASIL D**
+      enforced (99 % / 90 % / 10 FIT); example switched to ASIL D end-to-end
 
 ### 🔄 Software track (ASPICE v3.1)
 
@@ -187,7 +201,9 @@ review / real use → finding or anomaly → docs/lessons_learned.md (LL-id)
 ### 🔄 Hardware track (ASPICE v4.0)
 
 - [ ] HWE.1 ReqIF round-trip export (currently export skeleton only)
-- [ ] FMEDA metric (PMHF / SPFM / LFM) parser hook for HWE.3/HWE.4
+- [ ] Full PMHF (dual-point latent/detected with exposure/test intervals);
+      `fmeda_to_aspice.py` currently reports a residual single-point proxy
+- [ ] Dependent Failure Analysis (DFA) / freedom-from-interference checker
 - [ ] HWE.2 interface-completeness checker (6-dimension matrix)
 - [ ] Extend traceability parser to ingest ReqIF/DOORS exports directly
 
@@ -231,4 +247,3 @@ Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 *If your team is trying to get open-source tools past a safety audit,
 open an issue. That's exactly what this project exists for.*
-Commit Message: Update README with full project documentation
