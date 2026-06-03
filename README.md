@@ -43,7 +43,8 @@ proprietary toolchains.
 aspice-oss-validator/
 ├── prompts/
 │   ├── aspice_swq_validator.md      # SWQ.1 Quality Assurance prompt
-│   └── aspice_swa_analyzer.md       # SWA.2 Architectural Design prompt
+│   ├── aspice_swa_analyzer.md       # SWA.2 Architectural Design prompt
+│   └── aspice_hwe1_analyzer.md      # HWE.1 Hardware Requirements prompt (v4.0)
 ├── parser/
 │   └── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
 ├── docs/
@@ -84,6 +85,12 @@ python parser/pytest_to_aspice.py report.json
 | SUP.1 — Quality Assurance | BP2, BP3, BP4 | ✅ Parser + Prompt |
 | SWE.1 — Software Requirements Analysis | BP1, BP2, BP4 | 🔄 In progress |
 | SWE.5 — Software Integration Test | BP1, BP3, BP5 | 🔄 In progress |
+| HWE.1 — Hardware Requirements Analysis (v4.0) | BP1–BP6 | ✅ Prompt available |
+
+> **Note:** HWE.1 is the first **hardware** engineering process covered and the
+> first artifact targeting **ASPICE v4.0** (the SWE prompts target v3.1). It
+> extends the validator beyond software into the hardware/functional-safety
+> domain — see `prompts/aspice_hwe1_analyzer.md`.
 
 ---
 
@@ -104,6 +111,9 @@ python parser/pytest_to_aspice.py report.json
 - [ ] GitHub Actions workflow: automated full ASPICE evidence pipeline
 - [ ] ISO 26262 Part 6 mapping table
 - [ ] Web interface for evidence generation
+- [ ] HWE.1 ReqIF/CSV → Hardware Requirements Spec parser (`parser/hwe1_to_aspice.py`)
+- [ ] HWE.1–4 ↔ OSS tool mapping table (`docs/aspice_hwe_mapping.md`)
+- [ ] ISO 26262 Part 5 (hardware) mapping table
 
 ---
 
