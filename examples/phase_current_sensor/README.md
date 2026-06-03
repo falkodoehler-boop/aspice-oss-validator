@@ -10,7 +10,25 @@ fault case*).
 | File | Role |
 |---|---|
 | [`input_requirements.csv`](input_requirements.csv) | Raw, unstructured requirement input (the kind exported from a draft sheet) |
-| [`output_hwe1_spec.md`](output_hwe1_spec.md) | ASPICE v4.0 HWE.1 specification produced from the input |
+| [`output_hwe1_mechanical.md`](output_hwe1_mechanical.md) | **Stage 1** — `parser/hwe1_to_aspice.py` output: structural skeleton + mechanical INCOSE screen |
+| [`output_hwe1_spec.md`](output_hwe1_spec.md) | **Stage 2** — `aspice_hwe1_analyzer.md` prompt output: full graded ASPICE v4.0 spec |
+
+## Two-stage pipeline
+
+```
+input_requirements.csv
+   │  python parser/hwe1_to_aspice.py  (no dependencies, deterministic)
+   ▼
+output_hwe1_mechanical.md   ← flags vague terms, conjunctions, missing numbers
+   │  prompts/aspice_hwe1_analyzer.md  (LLM: INCOSE 8 + ISO 26262-5)
+   ▼
+output_hwe1_spec.md         ← graded spec, safety mechanism, Action Items
+```
+
+The mechanical stage deliberately returns a **FAIL** verdict on this raw input:
+the draft lines are vague ("fast enough", "accurate enough") and carry no
+numbers. That is the parser doing its job — it shows reviewers exactly what the
+prompt stage then has to resolve.
 
 ## How it was produced
 

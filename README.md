@@ -49,9 +49,11 @@ aspice-oss-validator/
 │   ├── aspice_hwe3_analyzer.md      # HWE.3 Verification vs Design prompt (v4.0)
 │   └── aspice_hwe4_analyzer.md      # HWE.4 Verification vs Requirements prompt (v4.0)
 ├── parser/
-│   └── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
+│   ├── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
+│   └── hwe1_to_aspice.py            # requirements CSV → ASPICE HWE.1 skeleton
 ├── docs/
-│   └── aspice_oss_mapping.md        # ASPICE BP ↔ OSS tool mapping table
+│   ├── aspice_oss_mapping.md        # ASPICE SWE BP ↔ OSS tool mapping table
+│   └── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
 └── examples/
 ├── example_evidence_output.md   # End-to-end SWQ.1 example
 └── phase_current_sensor/        # End-to-end HWE.1 example (±400 A, ASIL C)
@@ -75,6 +77,17 @@ pytest --json-report --json-report-file=report.json
 python parser/pytest_to_aspice.py report.json
 
 # Output: aspice_swq_evidence.md — ready for audit package
+```
+
+### Hardware (HWE.1)
+
+```bash
+# Map a raw hardware-requirements CSV to an ASPICE v4.0 HWE.1 skeleton
+# with a mechanical INCOSE quality screen (no extra dependencies):
+python parser/hwe1_to_aspice.py examples/phase_current_sensor/input_requirements.csv
+
+# Output: aspice_hwe1_spec.md — feed it to prompts/aspice_hwe1_analyzer.md
+# for the full INCOSE 8-criteria + ISO 26262-5 graded specification.
 ```
 
 ---
@@ -121,9 +134,11 @@ python parser/pytest_to_aspice.py report.json
 - [ ] GitHub Actions workflow: automated full ASPICE evidence pipeline
 - [ ] ISO 26262 Part 6 mapping table
 - [ ] Web interface for evidence generation
-- [ ] HWE.1 ReqIF/CSV → Hardware Requirements Spec parser (`parser/hwe1_to_aspice.py`)
-- [ ] HWE.1–4 ↔ OSS tool mapping table (`docs/aspice_hwe_mapping.md`)
-- [ ] ISO 26262 Part 5 (hardware) mapping table
+- [x] HWE.1 CSV → Hardware Requirements Spec parser (`parser/hwe1_to_aspice.py`)
+- [x] HWE.1–4 ↔ OSS tool mapping table (`docs/aspice_hwe_mapping.md`)
+- [x] ISO 26262 Part 5 (hardware) clause mapping (in `docs/aspice_hwe_mapping.md`)
+- [ ] HWE.1 ReqIF round-trip export (currently export skeleton only)
+- [ ] FMEDA metric (PMHF/SPFM) parser hook for HWE.3/HWE.4
 
 ---
 
