@@ -37,10 +37,42 @@ CSV schemas (headers required):
 
 import argparse
 import csv
+import json
+import os
 import sys
 from datetime import datetime
 
 ASIL_ORDER = {"QM": 0, "A": 1, "B": 2, "C": 3, "D": 4}
+
+# Built-in defaults. Overridable (auditably) via config/review_rules.json.
+PARTIAL_MIN_REQ_COV = 50
+FAULT_INJECTION_FROM = "C"
+
+DEFAULT_CONFIG = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "config", "review_rules.json",
+)
+
+
+def load_rules(path: str) -> None:
+    """Optionally override coverage thresholds from review_rules.json.
+
+    Silent no-op if absent; malformed file is reported, not swallowed.
+    """
+    global PARTIAL_MIN_REQ_COV, FAULT_INJECTION_FROM
+    if not path or not os.path.isfile(path):
+        return
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+    except (OSError, ValueError) as exc:
+        print(f"warning: ignoring config {path}: {exc}", file=sys.stderr)
+        return
+    ct = cfg.get("coverage_thresholds", {})
+    PARTIAL_MIN_REQ_COV = ct.get("partial_verdict_min_requirement_coverage",
+                                 PARTIAL_MIN_REQ_COV)
+    FAULT_INJECTION_FROM = ct.get("fault_injection_required_from_asil",
+                                  FAULT_INJECTION_FROM)
 
 
 def load_csv(path: str, required: set) -> list:
@@ -109,8 +141,9 @@ def analyze(reqs, elems, tcs) -> dict:
     # fault injection for ASIL C/D elements
     fi_elems = {t["verifies_id"] for t in tc_d
                 if t.get("fault_injection", "").lower() in ("yes", "true", "1")}
+    fi_threshold = ASIL_ORDER.get(str(FAULT_INJECTION_FROM).upper(), ASIL_ORDER["C"])
     for e in elems:
-        if asil_rank(e.get("ASIL", "")) >= ASIL_ORDER["C"] and e["ID"] not in fi_elems:
+        if asil_rank(e.get("ASIL", "")) >= fi_threshold and e["ID"] not in fi_elems:
             findings["hwe3"].append(
                 f"ASIL {e.get('ASIL')} element {e['ID']} has no fault-injection test case"
             )
@@ -134,7 +167,7 @@ def analyze(reqs, elems, tcs) -> dict:
         return "PASS" if not fs else "FAIL"
 
     overall = "PASS" if not any(findings.values()) else \
-              "PARTIAL" if req_cov >= 50 else "FAIL"
+              "PARTIAL" if req_cov >= PARTIAL_MIN_REQ_COV else "FAIL"
 
     return {
         "timestamp": datetime.now().isoformat(timespec="seconds"),
@@ -224,7 +257,11 @@ def main():
     ap.add_argument("--testcases", required=True,
                     help="test cases CSV (ID, type, verifies_id, ASIL, fault_injection)")
     ap.add_argument("--out", default="hwe_trace_report.md", help="output Markdown path")
+    ap.add_argument("--config", default=DEFAULT_CONFIG,
+                    help="review_rules.json with threshold overrides (optional)")
     args = ap.parse_args()
+
+    load_rules(args.config)
 
     try:
         reqs = load_csv(args.requirements, {"ID", "ASIL"})

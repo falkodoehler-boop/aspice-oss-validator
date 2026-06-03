@@ -31,16 +31,47 @@ Output:
 
 import argparse
 import csv
+import json
+import os
 import re
 import sys
 from datetime import datetime
 
+# Built-in defaults. Overridable (auditably) via config/review_rules.json —
+# see docs/lessons_learned.md for the rationale behind each list.
 VAGUE_TERMS = [
     "adequate", "sufficient", "appropriate", "fast", "slow", "robust",
     "reliable", "user-friendly", "as needed", "etc", "high", "low",
     "good", "reasonable", "minimal", "maximal", "enough",
 ]
 NON_NORMATIVE = ["should", "may", "could", "might", "would"]
+
+DEFAULT_CONFIG = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "config", "review_rules.json",
+)
+
+
+def load_rules(path: str) -> None:
+    """Optionally override the heuristic term lists from review_rules.json.
+
+    Silent no-op if the file is absent (keeps the parser dependency-free and
+    backward compatible). A malformed file is reported, not swallowed.
+    """
+    global VAGUE_TERMS, NON_NORMATIVE
+    if not path or not os.path.isfile(path):
+        return
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+    except (OSError, ValueError) as exc:
+        print(f"warning: ignoring config {path}: {exc}", file=sys.stderr)
+        return
+    heur = cfg.get("incose_heuristics", {})
+    VAGUE_TERMS = heur.get("vague_terms", VAGUE_TERMS)
+    NON_NORMATIVE = heur.get("non_normative_terms", NON_NORMATIVE)
+
+
 NUMERIC_RE = re.compile(r"\d")
 DOMAIN_RE = re.compile(r"[^A-Za-z0-9]+")
 
@@ -207,7 +238,11 @@ def main():
     ap = argparse.ArgumentParser(description="Map raw HW requirements CSV to ASPICE HWE.1.")
     ap.add_argument("csv_path", help="Input requirements CSV (ID,Statement,Rationale,ASIL,Source)")
     ap.add_argument("--out", default="aspice_hwe1_spec.md", help="Output Markdown path")
+    ap.add_argument("--config", default=DEFAULT_CONFIG,
+                    help="review_rules.json with heuristic overrides (optional)")
     args = ap.parse_args()
+
+    load_rules(args.config)
 
     try:
         rows = load_rows(args.csv_path)

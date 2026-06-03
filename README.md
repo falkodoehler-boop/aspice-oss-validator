@@ -47,14 +47,18 @@ aspice-oss-validator/
 │   ├── aspice_hwe1_analyzer.md      # HWE.1 Hardware Requirements prompt (v4.0)
 │   ├── aspice_hwe2_analyzer.md      # HWE.2 Hardware Design prompt (v4.0)
 │   ├── aspice_hwe3_analyzer.md      # HWE.3 Verification vs Design prompt (v4.0)
-│   └── aspice_hwe4_analyzer.md      # HWE.4 Verification vs Requirements prompt (v4.0)
+│   ├── aspice_hwe4_analyzer.md      # HWE.4 Verification vs Requirements prompt (v4.0)
+│   └── aspice_review.md             # Artifact review + lessons-learned capture prompt
 ├── parser/
 │   ├── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
 │   ├── hwe1_to_aspice.py            # requirements CSV → ASPICE HWE.1 skeleton
 │   └── hwe_trace_to_aspice.py       # req/elem/test CSVs → HWE.2-4 traceability report
+├── config/
+│   └── review_rules.json            # auditable, externalized heuristics & thresholds
 ├── docs/
 │   ├── aspice_oss_mapping.md        # ASPICE SWE BP ↔ OSS tool mapping table
-│   └── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
+│   ├── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
+│   └── lessons_learned.md           # curated learning loop — findings → rule changes
 └── examples/
 ├── example_evidence_output.md   # End-to-end SWQ.1 example
 └── phase_current_sensor/        # End-to-end HWE.1 example (±400 A, ASIL C)
@@ -140,6 +144,25 @@ python parser/hwe_trace_to_aspice.py \
 
 ---
 
+## Learning Loop (auditable, not ML)
+
+The validator improves from real-world use **without** becoming a black box.
+Determinism and traceability are the whole point in a compliance tool, so the
+loop is deliberately human-curated:
+
+```
+review / real use → finding or anomaly → docs/lessons_learned.md (LL-id)
+                  → rule change in config/review_rules.json (cites the LL-id)
+                  → parsers pick it up on next run
+```
+
+- `prompts/aspice_review.md` — independent review of any generated artifact;
+  emits findings and ready-to-paste lessons-learned rows.
+- `docs/lessons_learned.md` — the register; every rule change traces back to
+  an `LL-id` (evidence), so an assessor can audit *why* a heuristic exists.
+- `config/review_rules.json` — externalized term lists and coverage thresholds
+  the parsers load (with built-in fallback). No silent tuning, no self-mutation.
+
 ## Roadmap
 
 ### ✅ Done
@@ -151,6 +174,8 @@ python parser/hwe_trace_to_aspice.py \
 - [x] **HWE.2–4 traceability & coverage parser** (`parser/hwe_trace_to_aspice.py`)
 - [x] **HWE ↔ OSS tool + ISO 26262-5 mapping** (`docs/aspice_hwe_mapping.md`)
 - [x] **End-to-end HWE.1→4 worked example** (`examples/phase_current_sensor/`)
+- [x] **Review + lessons-learned learning loop** (`prompts/aspice_review.md`,
+      `docs/lessons_learned.md`, `config/review_rules.json`)
 
 ### 🔄 Software track (ASPICE v3.1)
 

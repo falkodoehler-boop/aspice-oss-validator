@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "description": "Externalized, auditable rule set consumed by the parsers. Changes here must be traceable to an entry in docs/lessons_learned.md (see 'lesson_ref').",
+  "incose_heuristics": {
+    "vague_terms": [
+      "adequate", "sufficient", "appropriate", "fast", "slow", "robust",
+      "reliable", "user-friendly", "as needed", "etc", "high", "low",
+      "good", "reasonable", "minimal", "maximal", "enough"
+    ],
+    "non_normative_terms": ["should", "may", "could", "might", "would"],
+    "conjunction_terms": [" and ", " or "],
+    "lesson_ref": ["LL-2026-0003"]
+  },
+  "coverage_thresholds": {
+    "comment": "ASIL-scaled minimums per ISO 26262-5 / ASPICE HWE.3-4 practice.",
+    "element_coverage_min": {"QM": 90, "A": 100, "B": 100, "C": 100, "D": 100},
+    "requirement_coverage_min": {"QM": 90, "A": 95, "B": 95, "C": 100, "D": 100},
+    "fault_injection_required_from_asil": "C",
+    "partial_verdict_min_requirement_coverage": 50,
+    "lesson_ref": []
+  }
+}
