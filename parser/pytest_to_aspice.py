@@ -107,4 +107,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-  Commit Message: Add pytest-to-ASPICE parser

@@ -43,13 +43,26 @@ proprietary toolchains.
 aspice-oss-validator/
 ├── prompts/
 │   ├── aspice_swq_validator.md      # SWQ.1 Quality Assurance prompt
-│   └── aspice_swa_analyzer.md       # SWA.2 Architectural Design prompt
+│   ├── aspice_swa_analyzer.md       # SWA.2 Architectural Design prompt
+│   ├── aspice_hwe1_analyzer.md      # HWE.1 Hardware Requirements prompt (v4.0)
+│   ├── aspice_hwe2_analyzer.md      # HWE.2 Hardware Design prompt (v4.0)
+│   ├── aspice_hwe3_analyzer.md      # HWE.3 Verification vs Design prompt (v4.0)
+│   ├── aspice_hwe4_analyzer.md      # HWE.4 Verification vs Requirements prompt (v4.0)
+│   └── aspice_review.md             # Artifact review + lessons-learned capture prompt
 ├── parser/
-│   └── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
+│   ├── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
+│   ├── hwe1_to_aspice.py            # requirements CSV → ASPICE HWE.1 skeleton
+│   ├── hwe_trace_to_aspice.py       # req/elem/test CSVs → HWE.2-4 traceability report
+│   └── fmeda_to_aspice.py           # FMEDA CSV → ISO 26262-5 SPFM/LFM/PMHF vs ASIL target
+├── config/
+│   └── review_rules.json            # auditable, externalized heuristics & thresholds
 ├── docs/
-│   └── aspice_oss_mapping.md        # ASPICE BP ↔ OSS tool mapping table
+│   ├── aspice_oss_mapping.md        # ASPICE SWE BP ↔ OSS tool mapping table
+│   ├── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
+│   └── lessons_learned.md           # curated learning loop — findings → rule changes
 └── examples/
-└── example_evidence_output.md   # End-to-end example
+├── example_evidence_output.md   # End-to-end SWQ.1 example
+└── phase_current_sensor/        # End-to-end HWE.1 example (±400 A, ASIL C)
 
 ---
 
@@ -72,6 +85,47 @@ python parser/pytest_to_aspice.py report.json
 # Output: aspice_swq_evidence.md — ready for audit package
 ```
 
+### Hardware (HWE.1)
+
+```bash
+# Map a raw hardware-requirements CSV to an ASPICE v4.0 HWE.1 skeleton
+# with a mechanical INCOSE quality screen (no extra dependencies):
+python parser/hwe1_to_aspice.py examples/phase_current_sensor/input_requirements.csv
+
+# Output: aspice_hwe1_spec.md — feed it to prompts/aspice_hwe1_analyzer.md
+# for the full INCOSE 8-criteria + ISO 26262-5 graded specification.
+```
+
+### Hardware (HWE.2–HWE.4 traceability & coverage)
+
+```bash
+# Deterministic relationship checks across design, design verification and
+# requirement verification (orphans, ASIL consistency, coverage, fault injection):
+python parser/hwe_trace_to_aspice.py \
+  --requirements examples/phase_current_sensor/trace_requirements.csv \
+  --elements     examples/phase_current_sensor/trace_elements.csv \
+  --testcases    examples/phase_current_sensor/trace_testcases.csv
+
+# Output: hwe_trace_report.md — bidirectional matrix + per-process verdicts.
+```
+
+### Hardware (ISO 26262-5 architectural metrics — the ASIL gate)
+
+```bash
+# Compute SPFM / LFM / PMHF from a per-element FMEDA CSV and check them against
+# the target ASIL (D: SPFM >= 99%, LFM >= 90%, PMHF < 10 FIT):
+python parser/fmeda_to_aspice.py examples/phase_current_sensor/fmeda.csv --asil D
+
+# Output: fmeda_metrics_report.md — per-metric PASS/FAIL vs the ASIL target.
+```
+
+### Tests
+
+```bash
+pip install pytest
+python -m pytest tests/ -q   # unit tests for all three HWE parsers
+```
+
 ---
 
 ## ASPICE Coverage
@@ -84,6 +138,18 @@ python parser/pytest_to_aspice.py report.json
 | SUP.1 — Quality Assurance | BP2, BP3, BP4 | ✅ Parser + Prompt |
 | SWE.1 — Software Requirements Analysis | BP1, BP2, BP4 | 🔄 In progress |
 | SWE.5 — Software Integration Test | BP1, BP3, BP5 | 🔄 In progress |
+| HWE.1 — Hardware Requirements Analysis (v4.0) | BP1–BP6 | ✅ Prompt + Example |
+| HWE.2 — Hardware Design (v4.0) | BP1–BP7 | ✅ Prompt available |
+| HWE.3 — Verification against HW Design (v4.0) | BP1–BP7 | ✅ Prompt available |
+| HWE.4 — Verification against HW Requirements (v4.0) | BP1–BP7 | ✅ Prompt available |
+
+> **Note:** The HWE.1–HWE.4 prompts are the first **hardware** engineering
+> coverage and the first artifacts targeting **ASPICE v4.0** (the SWE prompts
+> target v3.1). They extend the validator beyond software into the
+> hardware/functional-safety domain, chaining HWE.1 → HWE.2 → HWE.3 → HWE.4
+> with INCOSE quality gating and ISO 26262-5 constraints. See the
+> `prompts/aspice_hwe*_analyzer.md` set and the worked example in
+> `examples/phase_current_sensor/`.
 
 ---
 
@@ -96,14 +162,64 @@ python parser/pytest_to_aspice.py report.json
 
 ---
 
+## Learning Loop (auditable, not ML)
+
+The validator improves from real-world use **without** becoming a black box.
+Determinism and traceability are the whole point in a compliance tool, so the
+loop is deliberately human-curated:
+
+```
+review / real use → finding or anomaly → docs/lessons_learned.md (LL-id)
+                  → rule change in config/review_rules.json (cites the LL-id)
+                  → parsers pick it up on next run
+```
+
+- `prompts/aspice_review.md` — independent review of any generated artifact;
+  emits findings and ready-to-paste lessons-learned rows.
+- `docs/lessons_learned.md` — the register; every rule change traces back to
+  an `LL-id` (evidence), so an assessor can audit *why* a heuristic exists.
+- `config/review_rules.json` — externalized term lists and coverage thresholds
+  the parsers load (with built-in fallback). No silent tuning, no self-mutation.
+
 ## Roadmap
 
-- [ ] coverage.py → ASPICE SWE.4 BP2 parser
+### ✅ Done
+
+- [x] pytest → ASPICE SWQ.1 evidence parser (`parser/pytest_to_aspice.py`)
+- [x] SWQ.1 / SWA.2 prompt templates
+- [x] **HWE.1–4 prompt set** (`prompts/aspice_hwe*_analyzer.md`) — ASPICE v4.0
+- [x] **HWE.1 CSV → requirements spec parser** (`parser/hwe1_to_aspice.py`)
+- [x] **HWE.2–4 traceability & coverage parser** (`parser/hwe_trace_to_aspice.py`)
+- [x] **HWE ↔ OSS tool + ISO 26262-5 mapping** (`docs/aspice_hwe_mapping.md`)
+- [x] **End-to-end HWE.1→4 worked example** (`examples/phase_current_sensor/`)
+- [x] **Review + lessons-learned learning loop** (`prompts/aspice_review.md`,
+      `docs/lessons_learned.md`, `config/review_rules.json`)
+- [x] **ISO 26262-5 architectural-metric gate** (`parser/fmeda_to_aspice.py`):
+      SPFM/LFM/PMHF computed and checked against per-ASIL targets, **ASIL D**
+      enforced (99 % / 90 % / 10 FIT); example switched to ASIL D end-to-end
+
+### 🔄 Software track (ASPICE v3.1)
+
+- [ ] coverage.py → SWE.4 BP2 parser
 - [ ] pylint → SUP.1 BP2 parser
 - [ ] strictdoc → SWE.1 traceability prompt
-- [ ] GitHub Actions workflow: automated full ASPICE evidence pipeline
-- [ ] ISO 26262 Part 6 mapping table
+- [ ] SWE.5 integration-test prompt + parser
+
+### 🔄 Hardware track (ASPICE v4.0)
+
+- [ ] HWE.1 ReqIF round-trip export (currently export skeleton only)
+- [ ] Full PMHF (dual-point latent/detected with exposure/test intervals);
+      `fmeda_to_aspice.py` currently reports a residual single-point proxy
+- [ ] Dependent Failure Analysis (DFA) / freedom-from-interference checker
+- [ ] HWE.2 interface-completeness checker (6-dimension matrix)
+- [ ] Extend traceability parser to ingest ReqIF/DOORS exports directly
+
+### 🔭 Cross-cutting
+
+- [ ] GitHub Actions workflow: automated full ASPICE evidence pipeline (SWE + HWE)
+- [ ] ISO 26262 Part 6 (software) clause mapping
 - [ ] Web interface for evidence generation
+- [ ] Migrate SWE prompts from ASPICE v3.1 → v4.0 (HWE already on v4.0)
 
 ---
 
@@ -138,4 +254,3 @@ Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 *If your team is trying to get open-source tools past a safety audit,
 open an issue. That's exactly what this project exists for.*
-Commit Message: Update README with full project documentation

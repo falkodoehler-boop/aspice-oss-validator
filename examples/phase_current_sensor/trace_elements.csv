@@ -1,0 +1,6 @@
+ID,Name,ASIL,allocated_req_ids,allocation_type
+HW-ELEM-SEN-001,Current Sense Front-End,D,HW-REQ-SEN-001;HW-REQ-SEN-002;HW-REQ-SEN-003,Full
+HW-ELEM-SEN-002,Isolation Barrier,D,HW-REQ-SEN-004,Full
+HW-ELEM-SEN-003,Self-Test & Diagnostics,D,HW-REQ-SEN-005;HW-REQ-SEN-006,Full
+HW-ELEM-SEN-004,Supply Regulator,D,HW-REQ-SEN-007,Full
+HW-ELEM-SEN-005,Sensor Housing,D,,Full

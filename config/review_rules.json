@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "description": "Externalized, auditable rule set consumed by the parsers. Changes here must be traceable to an entry in docs/lessons_learned.md (see 'lesson_ref').",
+  "incose_heuristics": {
+    "vague_terms": [
+      "adequate", "sufficient", "appropriate", "fast", "slow", "robust",
+      "reliable", "user-friendly", "as needed", "etc", "high", "low",
+      "good", "reasonable", "minimal", "maximal", "enough"
+    ],
+    "non_normative_terms": ["should", "may", "could", "might", "would"],
+    "conjunction_terms": [" and ", " or "],
+    "lesson_ref": ["LL-2026-0003"]
+  },
+  "coverage_thresholds": {
+    "comment": "ASIL-scaled minimums per ISO 26262-5 / ASPICE HWE.3-4 practice.",
+    "element_coverage_min": {"QM": 90, "A": 100, "B": 100, "C": 100, "D": 100},
+    "requirement_coverage_min": {"QM": 90, "A": 95, "B": 95, "C": 100, "D": 100},
+    "fault_injection_required_from_asil": "C",
+    "partial_verdict_min_requirement_coverage": 50,
+    "lesson_ref": []
+  },
+  "asil_architectural_metrics": {
+    "comment": "ISO 26262-5:2018 hardware architectural metric targets. SPFM/LFM per Clause 8 (Tables 4-5); PMHF per Clause 9 (Table 6), expressed in FIT (1 FIT = 1e-9/h). ASIL A has no architectural-metric target; null = not required.",
+    "spfm_min_percent": {"QM": null, "A": null, "B": 90, "C": 97, "D": 99},
+    "lfm_min_percent":  {"QM": null, "A": null, "B": 60, "C": 80, "D": 90},
+    "pmhf_max_fit":     {"QM": null, "A": null, "B": 100, "C": 100, "D": 10},
+    "diagnostic_coverage_min_percent": {"QM": null, "A": null, "B": 90, "C": 90, "D": 99},
+    "lesson_ref": ["LL-2026-0007"]
+  }
+}
