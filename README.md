@@ -44,13 +44,17 @@ aspice-oss-validator/
 ├── prompts/
 │   ├── aspice_swq_validator.md      # SWQ.1 Quality Assurance prompt
 │   ├── aspice_swa_analyzer.md       # SWA.2 Architectural Design prompt
-│   └── aspice_hwe1_analyzer.md      # HWE.1 Hardware Requirements prompt (v4.0)
+│   ├── aspice_hwe1_analyzer.md      # HWE.1 Hardware Requirements prompt (v4.0)
+│   ├── aspice_hwe2_analyzer.md      # HWE.2 Hardware Design prompt (v4.0)
+│   ├── aspice_hwe3_analyzer.md      # HWE.3 Verification vs Design prompt (v4.0)
+│   └── aspice_hwe4_analyzer.md      # HWE.4 Verification vs Requirements prompt (v4.0)
 ├── parser/
 │   └── pytest_to_aspice.py          # pytest JSON → ASPICE SWQ.1 evidence
 ├── docs/
 │   └── aspice_oss_mapping.md        # ASPICE BP ↔ OSS tool mapping table
 └── examples/
-└── example_evidence_output.md   # End-to-end example
+├── example_evidence_output.md   # End-to-end SWQ.1 example
+└── phase_current_sensor/        # End-to-end HWE.1 example (±400 A, ASIL C)
 
 ---
 
@@ -85,12 +89,18 @@ python parser/pytest_to_aspice.py report.json
 | SUP.1 — Quality Assurance | BP2, BP3, BP4 | ✅ Parser + Prompt |
 | SWE.1 — Software Requirements Analysis | BP1, BP2, BP4 | 🔄 In progress |
 | SWE.5 — Software Integration Test | BP1, BP3, BP5 | 🔄 In progress |
-| HWE.1 — Hardware Requirements Analysis (v4.0) | BP1–BP6 | ✅ Prompt available |
+| HWE.1 — Hardware Requirements Analysis (v4.0) | BP1–BP6 | ✅ Prompt + Example |
+| HWE.2 — Hardware Design (v4.0) | BP1–BP7 | ✅ Prompt available |
+| HWE.3 — Verification against HW Design (v4.0) | BP1–BP7 | ✅ Prompt available |
+| HWE.4 — Verification against HW Requirements (v4.0) | BP1–BP7 | ✅ Prompt available |
 
-> **Note:** HWE.1 is the first **hardware** engineering process covered and the
-> first artifact targeting **ASPICE v4.0** (the SWE prompts target v3.1). It
-> extends the validator beyond software into the hardware/functional-safety
-> domain — see `prompts/aspice_hwe1_analyzer.md`.
+> **Note:** The HWE.1–HWE.4 prompts are the first **hardware** engineering
+> coverage and the first artifacts targeting **ASPICE v4.0** (the SWE prompts
+> target v3.1). They extend the validator beyond software into the
+> hardware/functional-safety domain, chaining HWE.1 → HWE.2 → HWE.3 → HWE.4
+> with INCOSE quality gating and ISO 26262-5 constraints. See the
+> `prompts/aspice_hwe*_analyzer.md` set and the worked example in
+> `examples/phase_current_sensor/`.
 
 ---
 
