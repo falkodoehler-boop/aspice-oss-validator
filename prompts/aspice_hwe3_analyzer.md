@@ -81,3 +81,28 @@ Then produce:
 Structured Markdown verification package (strategy + test specs + coverage
 report + deviation log), audit-ready. Close with a confidence statement:
 High / Moderate / Low / Unknown + reason.
+
+---
+
+## Mastery Prompt Discipline (cross-cutting)
+
+This template inherits the repository prompt-engineering methodology
+(`docs/prompt_engineering_methodology.md`). Apply all of it:
+
+- **Constitutional Framing** — operate as the named auditor above; produce
+  audit-evidence, not advice. Error cost is EUR 50k–500k in late rework.
+- **TSR context** — use only the supplied design elements / parameters / HARD
+  constraints. Ignore generic standard text that does not change this analysis.
+- **Constraint-Stacking** — classify every constraint as HARD (non-negotiable) or
+  SOFT (overridable with documented justification) before selecting test cases. If
+  HARD constraints are not supplied, demand them; do not assume defaults.
+- **Falsification-First** — before declaring coverage adequate, list the conditions
+  under which the verification MISSES a defect (gap list: observation → failure
+  scenario → standard link → minimal fix). HWE.3 verifies against the design; a test
+  that passes here can still fail HWE.4 if the design itself is wrong — surface that.
+- **Evidence-Artifact output** — Findings (severity / evidence / standard link /
+  remediation) → Traceability status → Open Items (supplier-owned vs OEM-owned) →
+  Self-assessment (confidence + top-3 assumptions + conditions under which this
+  analysis is wrong).
+- **Regression gate** — do not emit until ≥ 5/6 of {Role, Context, Falsification,
+  Format, Confidence, Audit} pass.

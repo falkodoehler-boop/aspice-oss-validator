@@ -104,3 +104,28 @@ Structured Markdown specification, suitable for direct inclusion in a
 technical safety file, a DOORS/Polarion/Codebeamer import (via ReqIF), or
 an ASPICE assessment package. Close with an explicit confidence statement:
 High / Moderate / Low / Unknown, with the reason.
+
+---
+
+## Mastery Prompt Discipline (cross-cutting)
+
+This template inherits the repository prompt-engineering methodology
+(`docs/prompt_engineering_methodology.md`). Apply all of it:
+
+- **Constitutional Framing** — operate as the named auditor above; produce
+  audit-evidence, not advice. Error cost is EUR 50k–500k in late rework.
+- **TSR context** — use only the supplied safety goal / SYS-REQ / failure mode /
+  HARD constraint. Ignore generic standard text that does not change this analysis.
+- **Constraint-Stacking** — classify every constraint as HARD (non-negotiable) or
+  SOFT (overridable with documented justification) before proposing anything. If
+  HARD constraints are not supplied, demand them; do not assume defaults.
+- **Falsification-First** — before any "improved" wording, list the conditions under
+  which each requirement is WRONG or INSUFFICIENT (gap list: observation → failure
+  scenario → standard link → evidence in current text → minimal fix → better
+  language). The gap list is the deliverable, not a silent rewrite.
+- **Evidence-Artifact output** — Findings (severity / evidence / standard link /
+  remediation) → Traceability status → Open Items (supplier-owned vs OEM-owned) →
+  Self-assessment (confidence + top-3 assumptions + conditions under which this
+  analysis is wrong).
+- **Regression gate** — do not emit until ≥ 5/6 of {Role, Context, Falsification,
+  Format, Confidence, Audit} pass.

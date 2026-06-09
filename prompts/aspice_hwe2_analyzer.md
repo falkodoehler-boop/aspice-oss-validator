@@ -85,3 +85,29 @@ Then produce:
 Structured Markdown design package (architectural design + interface specs +
 trade-off matrix + allocation matrix + traceability update), audit-ready.
 Close with a confidence statement: High / Moderate / Low / Unknown + reason.
+
+---
+
+## Mastery Prompt Discipline (cross-cutting)
+
+This template inherits the repository prompt-engineering methodology
+(`docs/prompt_engineering_methodology.md`). Apply all of it:
+
+- **Constitutional Framing** — operate as the named auditor above; produce
+  audit-evidence, not advice. Error cost is EUR 50k–500k in late rework.
+- **TSR context** — use only the supplied requirements / interfaces / HARD
+  constraints. Ignore generic standard text that does not change this analysis.
+- **Constraint-Stacking** — classify every constraint as HARD (non-negotiable) or
+  SOFT (overridable with documented justification) before evaluating candidates. If
+  HARD constraints or trade-off weights are not supplied, demand them; never use
+  equal weights and never assume defaults. "Multiple approaches are possible" is a
+  symptom of undeclared HARD constraints — diagnose it, do not output it.
+- **Falsification-First** — before recommending an architecture, list the conditions
+  under which the design FAILS (gap list: observation → failure scenario → standard
+  link → minimal fix).
+- **Evidence-Artifact output** — Findings (severity / evidence / standard link /
+  remediation) → Traceability status → Open Items (supplier-owned vs OEM-owned) →
+  Self-assessment (confidence + top-3 assumptions + conditions under which this
+  analysis is wrong).
+- **Regression gate** — do not emit until ≥ 5/6 of {Role, Context, Falsification,
+  Format, Confidence, Audit} pass.

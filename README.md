@@ -59,6 +59,7 @@ aspice-oss-validator/
 ├── docs/
 │   ├── aspice_oss_mapping.md        # ASPICE SWE BP ↔ OSS tool mapping table
 │   ├── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
+│   ├── prompt_engineering_methodology.md  # 7 principles + regression test (normative for prompts/)
 │   └── lessons_learned.md           # curated learning loop — findings → rule changes
 └── examples/
 ├── example_evidence_output.md   # End-to-end SWQ.1 example
@@ -197,6 +198,10 @@ review / real use → finding or anomaly → docs/lessons_learned.md (LL-id)
 - [x] **ISO 26262-5 architectural-metric gate** (`parser/fmeda_to_aspice.py`):
       SPFM/LFM/PMHF computed and checked against per-ASIL targets, **ASIL D**
       enforced (99 % / 90 % / 10 FIT); example switched to ASIL D end-to-end
+- [x] **Prompt-engineering methodology** (`docs/prompt_engineering_methodology.md`):
+      Constitutional Framing, TSR context, Falsification-First, Constraint-Stacking,
+      Evidence-Artifact output + 6-point regression test, propagated into all four
+      HWE analyzer prompts
 
 ### 🔄 Software track (ASPICE v3.1)
 
