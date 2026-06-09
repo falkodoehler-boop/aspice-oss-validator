@@ -117,6 +117,15 @@ Score 1 point per passed check. Ship at ≥ 5/6; rebuild fundamentals at < 3/6.
 
 ---
 
+## Scope
+
+This methodology is applied to the **HWE.1–HWE.4** analyzer prompts by design. HWE
+is the downstream stage: the relevant requirements, assessments, and ASIL
+classifications are delivered by the **system (SYS)** and inherited downward — the
+HWE prompts *consume* those upstream outputs, they do not produce them. The SWE
+prompts (`aspice_swq`, `aspice_swa`) are deliberately **out of scope** for the
+Mastery Prompt Discipline block; that is a scope boundary, not a pending action.
+
 ## Provenance
 
 This methodology was applied to the `reqa-hwe` skill (v1.0.0 → v1.1.0, 2026-06-09)
