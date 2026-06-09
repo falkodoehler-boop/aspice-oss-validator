@@ -24,23 +24,65 @@ proprietary toolchains.
 
 ---
 
+## How it works — a Claude-native pipeline with a deterministic guardrail
+
+The core is not "call an LLM on a requirement." It is a two-layer pipeline that
+keeps a probabilistic model away from the two things an ISO 26262 assessor rejects
+on sight — hallucinated facts and non-reproducible results:
+
+```
+raw input ──▶ DETERMINISTIC GUARDRAIL ──▶ CLAUDE ──▶ audit-ready artifact
+              (parser/: IDs, numeric        (judgement: Necessary, Feasible,   (+ provenance:
+               INCOSE checks, FMEDA           Implementation-free, ISO 26262-5   model, tokens,
+               SPFM/LFM/PMHF vs ASIL)         graded analysis)                   pre-pass source)
+```
+
+The guardrail owns everything that must be exact and reproducible; Claude does only
+the reasoning a heuristic provably cannot. The guardrail's findings are injected
+into the prompt as established fact, so the model never re-derives — or contradicts —
+the audit baseline. Full rationale: [`docs/architecture.md`](docs/architecture.md).
+
+Run the whole pipeline end-to-end **for free** with `--dry-run` (assembles the exact
+prompt + deterministic pre-pass, no token spent), then drop the flag for the live
+Claude analysis.
+
+```bash
+pip install -e .
+aspice-validate hwe1 examples/phase_current_sensor/input_requirements.csv \
+    --asil D --safety-goal SG-INV-002 --dry-run --out artifact.md     # free, reproducible
+export ANTHROPIC_API_KEY=sk-ant-...
+aspice-validate hwe1 examples/phase_current_sensor/input_requirements.csv \
+    --asil D --safety-goal SG-INV-002 --out artifact.md               # live analysis
+```
+
+---
+
 ## What This Does
 
 `aspice-oss-validator` provides:
 
-- **AI Prompts** — Structured prompt templates that analyze OSS tool output
-  and generate ASPICE-compliant work products (SWA, SWI, SWQ, SWV)
-- **Parsers** — Python modules that map pytest, coverage.py, and pylint
-  results to ASPICE base practices with structured evidence records
-- **Mapping Tables** — Normative documentation linking ASPICE process areas
-  to open-source tools and their evidence artifacts
-- **Examples** — End-to-end examples showing raw tool output transformed
-  into audit-ready compliance records
+- **Claude-native pipeline** (`src/aspice_validator/`) — `aspice-validate` runs raw
+  engineering input through a deterministic guardrail and then Claude, emitting an
+  audit-ready artifact with a model/token provenance header
+- **AI Prompts** (`prompts/`) — the version-controlled spec the pipeline executes;
+  structured templates that generate ASPICE-compliant work products
+- **Deterministic parsers** (`parser/`) — the guardrail/audit baseline: map pytest,
+  requirements, traceability, and FMEDA data to ASPICE base practices, never
+  hallucinated
+- **Mapping Tables & Methodology** (`docs/`) — ASPICE ↔ OSS ↔ ISO 26262 mappings,
+  the architecture, and the normative prompt-engineering methodology
+- **Examples** — end-to-end runs (incl. a reproducible pipeline dry-run artifact)
 
 ---
 
 ## Repository Structure
 aspice-oss-validator/
+├── src/aspice_validator/            # Claude-native pipeline (the product entry point)
+│   ├── client.py                    # lazy Anthropic SDK wrapper; model + tokens explicit
+│   ├── prompts.py                   # loads prompts/ templates, binds placeholders
+│   ├── guardrail.py                 # wraps parser/ — the deterministic pre-pass
+│   ├── pipeline.py                  # guardrail -> Claude -> artifact (honest --dry-run)
+│   └── cli.py                       # `aspice-validate hwe1 ...`
 ├── prompts/
 │   ├── aspice_swq_validator.md      # SWQ.1 Quality Assurance prompt
 │   ├── aspice_swa_analyzer.md       # SWA.2 Architectural Design prompt
@@ -57,10 +99,12 @@ aspice-oss-validator/
 ├── config/
 │   └── review_rules.json            # auditable, externalized heuristics & thresholds
 ├── docs/
+│   ├── architecture.md              # deterministic-guardrail-around-Claude pattern
 │   ├── aspice_oss_mapping.md        # ASPICE SWE BP ↔ OSS tool mapping table
 │   ├── aspice_hwe_mapping.md        # ASPICE HWE.1–4 ↔ OSS tool / ISO 26262-5 mapping
 │   ├── prompt_engineering_methodology.md  # 7 principles + regression test (normative for prompts/)
 │   └── lessons_learned.md           # curated learning loop — findings → rule changes
+├── pyproject.toml                   # pip-installable; `aspice-validate` console script
 └── examples/
 ├── example_evidence_output.md   # End-to-end SWQ.1 example
 └── phase_current_sensor/        # End-to-end HWE.1 example (±400 A, ASIL C)
@@ -202,6 +246,9 @@ review / real use → finding or anomaly → docs/lessons_learned.md (LL-id)
       Constitutional Framing, TSR context, Falsification-First, Constraint-Stacking,
       Evidence-Artifact output + 6-point regression test, propagated into all four
       HWE analyzer prompts
+- [x] **Claude-native pipeline** (`src/aspice_validator/`, `aspice-validate` CLI):
+      deterministic guardrail → Claude → provenance-stamped artifact, with an honest
+      `--dry-run` (zero-token, reproducible) path; see `docs/architecture.md`
 
 ### 🔄 Software track (ASPICE v3.1)
 

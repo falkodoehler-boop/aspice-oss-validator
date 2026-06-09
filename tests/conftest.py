@@ -1,9 +1,10 @@
-"""Make the stdlib-only parsers importable from tests/ without packaging."""
+"""Make the parsers and the package importable from tests/ without installing."""
 import os
 import sys
 
-PARSER_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "parser"
-)
-if PARSER_DIR not in sys.path:
-    sys.path.insert(0, PARSER_DIR)
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PARSER_DIR = os.path.join(_ROOT, "parser")
+SRC_DIR = os.path.join(_ROOT, "src")
+for _path in (PARSER_DIR, SRC_DIR):
+    if _path not in sys.path:
+        sys.path.insert(0, _path)

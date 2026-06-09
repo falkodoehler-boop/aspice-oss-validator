@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aspice-oss-validator"
+version = "0.1.0"
+description = "Claude-native ASPICE v4.0 / ISO 26262 compliance pipeline for open-source toolchains"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Falko Doehler" }]
+keywords = ["aspice", "iso26262", "functional-safety", "automotive", "claude", "anthropic"]
+dependencies = [
+    "anthropic>=0.40",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.urls]
+Homepage = "https://github.com/falkodoehler-boop/aspice-oss-validator"
+
+[project.scripts]
+aspice-validate = "aspice_validator.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
