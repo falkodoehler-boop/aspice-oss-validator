@@ -1,0 +1,24 @@
+#!/bin/sh
+# Protokolliert, WANN dieses Geraet fremde Aenderungen uebernommen hat.
+#
+# Jedes Geraet schreibt ausschliesslich seine EIGENE Datei unter .sync/ —
+# dadurch koennen zwei Rechner nie im selben File kollidieren.
+# Der Eintrag bleibt als unstaged Aenderung liegen und faehrt beim naechsten
+# Commit mit; der Hook committet bewusst nicht selbst.
+#
+# Greift bei `git pull` (Merge). Bei `git pull --rebase` feuert post-merge
+# nicht — dann traegt der post-rewrite-Hook den Sync nach.
+
+DEVICE=$(git config device.name 2>/dev/null)
+[ -n "$DEVICE" ] || DEVICE=$(hostname)
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+LOG="$ROOT/.sync/$DEVICE.md"
+
+mkdir -p "$ROOT/.sync"
+if [ ! -f "$LOG" ]; then
+  printf '# Sync-Log %s\n\nWann dieses Geraet den Stand der anderen uebernommen hat.\n\n| Zeitpunkt | Stand danach |\n|---|---|\n' "$DEVICE" > "$LOG"
+fi
+
+printf '| %s | %s |\n' "$(date '+%Y-%m-%d %H:%M')" "$(git rev-parse --short HEAD)" >> "$LOG"
+exit 0
