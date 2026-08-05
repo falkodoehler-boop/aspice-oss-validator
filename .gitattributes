@@ -1,0 +1,10 @@
+# Shell-Skripte, Hooks und Datenlisten muessen LF behalten.
+#
+# Ohne diese Regel checkt Git sie auf Windows mit CRLF aus. Das \r landet
+# dann in Variablen — aus "canvas-art" wird "canvas-art\r", der Klon-Pfad
+# ist unbrauchbar und Git faellt auf SSH-Interpretation zurueck
+# ("Could not resolve hostname g"). Genau daran ist der erste
+# End-to-End-Test des Laptop-Bootstraps gescheitert (05.08.2026).
+*.sh        text eol=lf
+*.tsv       text eol=lf
+.githooks/* text eol=lf
